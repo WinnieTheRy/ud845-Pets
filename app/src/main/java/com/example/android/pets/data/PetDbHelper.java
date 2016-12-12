@@ -12,11 +12,13 @@ import com.example.android.pets.data.PetContract.PetEntry;
 
 public class PetDbHelper extends SQLiteOpenHelper {
 
+    //databse version number
     public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Pets.db";
+    //data base name
+    public static final String DATABASE_NAME = "shelter.db";
 
     private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE" + PetEntry.TABLE_NAME + " (" +
+            "CREATE TABLE " + PetEntry.TABLE_NAME + " (" +
                     PetEntry._ID + " INTEGER PRIMARY KEY," +
                     PetEntry.COLUMN_PET_NAME + " TEXT," +
                     PetEntry.COLUMN_PET_BREED + " TEXT," +
@@ -32,8 +34,11 @@ public class PetDbHelper extends SQLiteOpenHelper {
     }
 
 
+    //creating of the pets database from sql
     @Override
     public void onCreate(SQLiteDatabase db) {
+        //onCreate is the same as saying this in the command promt
+        //CREATE TABLE pets (_id INTEGER PRIMARY KEY, name TEXT, weight INTEGER);
         db.execSQL(SQL_CREATE_ENTRIES);
     }
 
