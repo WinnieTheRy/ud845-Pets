@@ -4,7 +4,7 @@ package com.example.android.pets.data;
 
 import android.provider.BaseColumns;
 
-public final class PetContract {
+public final class PetContract{
 
 
     public static abstract class PetEntry implements BaseColumns {
