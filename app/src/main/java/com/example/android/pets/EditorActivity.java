@@ -129,15 +129,15 @@ public class EditorActivity extends AppCompatActivity {
 
         String nameString = mNameEditText.getText().toString().trim(); //.trim() removes any extra whitespaces
         String breedString = mBreedEditText.getText().toString().trim();
-        String weightString = mWeightEditText.toString().trim();
+        String weightString = mWeightEditText.getText().toString().trim();
 
-        int weightInteger;
+        int weight;
 
         //if weightInteger return Invalid int: "" a NumberFormatException is thrown make a try catch to get the error
         try {
-            weightInteger = Integer.parseInt(weightString);
+            weight = Integer.parseInt(weightString);
         } catch (NumberFormatException e) {
-            weightInteger = 0;
+            weight = 0;
         }
 
         ContentValues values = new ContentValues();
@@ -145,7 +145,7 @@ public class EditorActivity extends AppCompatActivity {
         values.put(PetEntry.COLUMN_PET_NAME, nameString);
         values.put(PetEntry.COLUMN_PET_BREED, breedString);
         values.put(PetEntry.COLUMN_PET_GENDER, mGender);
-        values.put(PetEntry.COLUMN_PET_WEIGHT, weightInteger);
+        values.put(PetEntry.COLUMN_PET_WEIGHT, weight);
 
         //insert() displays the row id of the newly inseted row, if -1 an error occured
         long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
