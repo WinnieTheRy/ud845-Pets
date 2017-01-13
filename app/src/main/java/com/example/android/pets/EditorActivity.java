@@ -129,7 +129,16 @@ public class EditorActivity extends AppCompatActivity {
 
         String nameString = mNameEditText.getText().toString().trim(); //.trim() removes any extra whitespaces
         String breedString = mBreedEditText.getText().toString().trim();
-        int weightInteger = Integer.parseInt(mWeightEditText.getText().toString());
+        String weightString = mWeightEditText.toString().trim();
+
+        int weightInteger;
+
+        //if weightInteger return Invalid int: "" a NumberFormatException is thrown make a try catch to get the error
+        try {
+            weightInteger = Integer.parseInt(weightString);
+        } catch (NumberFormatException e) {
+            weightInteger = 0;
+        }
 
         ContentValues values = new ContentValues();
 

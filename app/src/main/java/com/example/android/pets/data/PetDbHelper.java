@@ -23,7 +23,7 @@ public class PetDbHelper extends SQLiteOpenHelper {
                     PetEntry.COLUMN_PET_NAME + " TEXT," +
                     PetEntry.COLUMN_PET_BREED + " TEXT," +
                     PetEntry.COLUMN_PET_GENDER + " INTEGER," +
-                    PetEntry.COLUMN_PET_WEIGHT + " INTEGER" + " )";
+                    PetEntry.COLUMN_PET_WEIGHT + " INTEGER DEFAULT 0" + " )";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + PetEntry.TABLE_NAME;
