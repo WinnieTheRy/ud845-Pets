@@ -70,6 +70,7 @@ public class CatalogActivity extends AppCompatActivity {
         // to get a Cursor that contains all rows from the pets table.
         //Cursor cursor = db.rawQuery("SELECT * FROM " + PetEntry.TABLE_NAME, null);
 
+        //The columns we want to recieve from the query
         String[] projection = {
                 PetEntry._ID,
                 PetEntry.COLUMN_PET_NAME,
@@ -78,6 +79,7 @@ public class CatalogActivity extends AppCompatActivity {
                 PetEntry.COLUMN_PET_WEIGHT
         };
 
+        //This is the query we send to get the coulums we want from the projection and all the rows from that pets table since we have null
         Cursor cursor = db.query(PetEntry.TABLE_NAME, projection, null, null, null, null, null);
 
         try {
@@ -93,20 +95,25 @@ public class CatalogActivity extends AppCompatActivity {
                     PetEntry.COLUMN_PET_GENDER + " - " +
                     PetEntry.COLUMN_PET_WEIGHT + "\n");
 
-            int idColumnIndex = cursor.getColumnIndex(PetEntry._ID);//gets the value of the colums number which is 0
+            //columns index value
+            int idColumnIndex = cursor.getColumnIndex(PetEntry._ID);//gets the value of the columns number which is 0
             int nameColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_NAME); //gets the calue of the column number which is 1
             int breedColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_BREED);
             int genderColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_GENDER);
             int weightCoumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_WEIGHT);
 
+            //row index values which loop from 0 to the total amount of rows
             while (cursor.moveToNext()) {
 
+                //Getting the string or int value (for _id) based on the current row we are in
+                //ex: row: 0 we well get all the int and string values based on the colums set in above and below
                 int currentId = cursor.getInt(idColumnIndex);
                 String currentName = cursor.getString(nameColumnIndex);
                 String currentBreed = cursor.getString(breedColumnIndex);
                 String currentGender = cursor.getString(genderColumnIndex);
                 String currentWeight = cursor.getString(weightCoumnIndex);
 
+                //displaying all the values to the textview
                 displayView.append("\n" + currentId + " - " + currentName + " - " + currentBreed + " - " + currentGender + " - " + currentWeight);
 
             }

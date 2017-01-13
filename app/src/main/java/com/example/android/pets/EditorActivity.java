@@ -147,6 +147,9 @@ public class EditorActivity extends AppCompatActivity {
         values.put(PetEntry.COLUMN_PET_GENDER, mGender);
         values.put(PetEntry.COLUMN_PET_WEIGHT, weight);
 
+        /**
+         * All the values entered are now being inserted into the pets table
+         */
         //insert() displays the row id of the newly inseted row, if -1 an error occured
         long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
 
