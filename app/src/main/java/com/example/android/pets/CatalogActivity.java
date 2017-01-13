@@ -102,7 +102,7 @@ public class CatalogActivity extends AppCompatActivity {
             int genderColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_GENDER);
             int weightCoumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_WEIGHT);
 
-            //row index values which loop from 0 to the total amount of rows
+            //row index values which loop from 0 to the total amount of rows, It starts at -1 since that represents the names of the columns
             while (cursor.moveToNext()) {
 
                 //Getting the string or int value (for _id) based on the current row we are in
