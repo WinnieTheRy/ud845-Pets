@@ -79,6 +79,9 @@ public class CatalogActivity extends AppCompatActivity {
                 PetEntry.COLUMN_PET_WEIGHT
         };
 
+        /**
+         * READING DATA:
+         */
         //This is the query we send to get the coulums we want from the projection and all the rows from that pets table since we have null
         Cursor cursor = db.query(PetEntry.TABLE_NAME, projection, null, null, null, null, null);
 
@@ -110,8 +113,8 @@ public class CatalogActivity extends AppCompatActivity {
                 int currentId = cursor.getInt(idColumnIndex);
                 String currentName = cursor.getString(nameColumnIndex);
                 String currentBreed = cursor.getString(breedColumnIndex);
-                String currentGender = cursor.getString(genderColumnIndex);
-                String currentWeight = cursor.getString(weightCoumnIndex);
+                int currentGender = cursor.getInt(genderColumnIndex);
+                int currentWeight = cursor.getInt(weightCoumnIndex);
 
                 //displaying all the values to the textview
                 displayView.append("\n" + currentId + " - " + currentName + " - " + currentBreed + " - " + currentGender + " - " + currentWeight);
