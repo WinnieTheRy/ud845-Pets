@@ -81,8 +81,9 @@ public class CatalogActivity extends AppCompatActivity {
 
         /**
          * READING DATA:
+         * Cursor: This interface provides random read-write access to the result set returned by a database query.
          */
-        //This is the query we send to get the coulums we want from the projection and all the rows from that pets table since we have null
+        //This is the query we send to get the columns we want from the projection and all the rows from that pets table since we have null
         Cursor cursor = db.query(PetEntry.TABLE_NAME, projection, null, null, null, null, null);
 
         try {
