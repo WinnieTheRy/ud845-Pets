@@ -1,10 +1,15 @@
 package com.example.android.pets.data;
 
 import android.content.ContentProvider;
+import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+
+import com.example.android.pets.data.PetContract.PetEntry;
 
 /**
  * Created by Ryan PC on 2017-01-14.
@@ -12,8 +17,21 @@ import android.support.annotation.Nullable;
 
 public class PetProvider extends ContentProvider {
 
+    public static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-    public static final String LOG_TAG = PetProvider.class.getName();
+    private static final int PETS = 100;
+
+    private static final int PETS_ID = 101;
+
+    private static final String LOG_TAG = PetProvider.class.getName();
+
+
+    static {
+
+        sUriMatcher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS, PETS);
+
+        sUriMatcher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS + "/#", PETS_ID);
+    }
 
     //databse helper object
     private PetDbHelper mDbHelper;
@@ -35,7 +53,55 @@ public class PetProvider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+
+        SQLiteDatabase database = mDbHelper.getReadableDatabase();
+
+        Cursor cursor = null;
+
+        int match = sUriMatcher.match(uri);
+
+        //switch case:
+        switch (match) {
+
+            case PETS:
+
+                //query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy)
+                cursor = database.query(PetEntry.TABLE_NAME, projection, null, null, null, null, sortOrder);
+
+                break;
+
+            case PETS_ID:
+
+                // For the PET_ID code, extract out the ID from the URI.
+                // For an example URI such as "content://com.example.android.pets/pets/3",
+                // the selection will be "_id=?" and the selection argument will be a
+                // String array containing the actual ID of 3 in this case.
+                //
+                // For every "?" in the selection, we need to have an element in the selection
+                // arguments that will fill in the "?". Since we have 1 question mark in the
+                // selection, we have 1 String in the selection arguments' String array.
+
+
+                /**rows with selectionargs with certian _id */
+                selection = PetEntry._ID + "=?"; //appended strings //_id=? the 5 will replace the question mark
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))}; //parseId is looking for a int
+                // at the end of the uri for the _id ex: { "5" }
+                //it then gets conterted back into a string so it can be
+                //added to the selection string ex: _id=5
+
+                // This will perform a query on the pets table where the _id equals 3 to return a
+                // Cursor containing that row of the table.
+                //query(String table, String[] columns, String selection, String[] selectionArgs, String groupBy, String having, String orderBy)
+                cursor = database.query(PetEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+
+            default:
+                throw new IllegalArgumentException("Cannot query unknown URI " + uri);
+
+
+        }
+        return cursor;
+
     }
 
     /**

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.example.android.pets.data.PetContract;
 import com.example.android.pets.data.PetContract.PetEntry;
 import com.example.android.pets.data.PetDbHelper;
+import com.example.android.pets.data.PetProvider;
 
 /**
  * Displays list of pets that were entered and stored in the app.
@@ -64,7 +66,7 @@ public class CatalogActivity extends AppCompatActivity {
         //PetDbHelper mDbHelper = new PetDbHelper(this);
 
         // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        //SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
         // Perform this raw SQL query "SELECT * FROM pets"
         // to get a Cursor that contains all rows from the pets table.
@@ -84,7 +86,10 @@ public class CatalogActivity extends AppCompatActivity {
          * Cursor: This interface provides random read-write access to the result set returned by a database query.
          */
         //This is the query we send to get the columns we want from the projection and all the rows from that pets table since we have null
-        Cursor cursor = db.query(PetEntry.TABLE_NAME, projection, null, null, null, null, null);
+        //Cursor cursor = db.query(PetEntry.TABLE_NAME, projection, null, null, null, null, null);
+
+        //Now using a content resolver and content provider to send query to database instead of directly to the database
+        Cursor cursor = getContentResolver().query(PetEntry.CONTENT_URI, projection, null, null, null);
 
         try {
             // Display the number of rows in the Cursor (which reflects the number of rows in the
