@@ -130,8 +130,30 @@ public class PetProvider extends ContentProvider {
      */
     private Uri insertPet(Uri uri, ContentValues values) {
 
-        //get writable databse
+        //get writable database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        // Check that name is not null
+        String name = values.getAsString(PetEntry.COLUMN_PET_NAME);
+        if (name == null) {
+            throw new IllegalArgumentException("Pet requires a name");
+        }
+
+        // No need to check breed null is okay if we do no know
+
+        // Check that gender is valid
+        Integer gender = values.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
+        if (gender == null || !PetEntry.isValidGender(gender)) {
+            throw new IllegalArgumentException("Pet requires gender");
+        }
+
+        // If the weight is provided, check that it's greater than or equal to 0 kg
+        //If the weight is null, that’s fine, and we can proceed with insertion (the database will insert default weight 0 automatically).
+        // If the weight is not null AND it’s a negative weight, then we need to throw an exception with the message “Pet requires valid weight.”
+        Integer weight = values.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
+        if (weight != null && weight < 0) {
+            throw new IllegalArgumentException("Pet requires valid weight");
+        }
 
         //the insert() method returns the rowId of the newly added animal
         // Insert the new pet with the given values
