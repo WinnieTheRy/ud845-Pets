@@ -15,9 +15,12 @@
  */
 package com.example.android.pets;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -125,12 +128,11 @@ public class EditorActivity extends AppCompatActivity {
     //get user input from editor
     private void insertPet() {
 
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        //SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         String nameString = mNameEditText.getText().toString().trim(); //.trim() removes any extra whitespaces
         String breedString = mBreedEditText.getText().toString().trim();
         String weightString = mWeightEditText.getText().toString().trim();
-
         int weight;
 
         //if weightInteger return Invalid int: "" a NumberFormatException is thrown make a try catch to get the error
@@ -154,14 +156,28 @@ public class EditorActivity extends AppCompatActivity {
          * All the values entered are now being inserted into the pets table
          */
         //insert() displays the row id of the newly inseted row, if -1 an error occured
-        long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
+        //long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
 
-        //create toast.
-        if (newRowId == -1) {
-            Toast.makeText(this, "Error with saving pet", Toast.LENGTH_SHORT).show();
+//        //create toast.
+//        if (newRowId == -1) {
+//            Toast.makeText(this, "Error with saving pet", Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(this, "Pet saved with id: " + newRowId, Toast.LENGTH_SHORT).show();
+//        }
+
+        Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
+
+        //check to see if the new row was added or not:
+        long idValid = ContentUris.parseId(newUri);
+
+        //displaying toast to very pet was asses to user
+        //we could have also said if newUri == null then display pet failed
+        if (idValid == -1) {
+            Toast.makeText(this, R.string.pet_not_added, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Pet saved with id: " + newRowId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.pet_added, Toast.LENGTH_SHORT).show();
         }
+
     }
 
 

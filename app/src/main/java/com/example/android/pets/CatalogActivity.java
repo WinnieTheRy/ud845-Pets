@@ -1,5 +1,6 @@
 package com.example.android.pets;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.pets.data.PetContract;
 import com.example.android.pets.data.PetContract.PetEntry;
@@ -144,7 +146,7 @@ public class CatalogActivity extends AppCompatActivity {
         //PetDbHelper mDbHelper = new PetDbHelper(this);
 
         //Gets the data repsository in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        //SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
@@ -155,7 +157,20 @@ public class CatalogActivity extends AppCompatActivity {
         values.put(PetEntry.COLUMN_PET_WEIGHT, 7);
 
         // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
+        //long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
+
+        Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
+
+        //getting row id of the newll added dummy pet
+        long idValid = ContentUris.parseId(newUri);
+
+        //displaying toast to verify pet was added
+        //we could have also said if newUri == null then display dummy pet failed
+        if(idValid == -1) {
+            Toast.makeText(this, R.string.dummy_pet_not_added, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, R.string.dummy_pet_added, Toast.LENGTH_SHORT).show();
+        }
 
     }
 

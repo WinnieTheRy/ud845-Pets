@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.example.android.pets.data.PetContract.PetEntry;
 
@@ -109,8 +110,41 @@ public class PetProvider extends ContentProvider {
      */
     @Nullable
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
-        return null;
+    public Uri insert(Uri uri, ContentValues contentValues) {
+
+        final int match = sUriMatcher.match(uri);
+
+        switch (match) {
+            case PETS:
+                return insertPet(uri, contentValues); //no need to add break since we are returning the value right away
+            default:
+                throw new IllegalArgumentException("Insertion is not supported for " + uri);
+
+        }
+
+    }
+
+    /**
+     * Insert a pet into the database with the given content values. Return the new content URI
+     * for that specific row in the database.
+     */
+    private Uri insertPet(Uri uri, ContentValues values) {
+
+        //get writable databse
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        //the insert() method returns the rowId of the newly added animal
+        // Insert the new pet with the given values
+        long newRowId = database.insert(PetEntry.TABLE_NAME, null, values);
+
+        if (newRowId == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for uri " + uri);
+        }
+
+        // Once we know the ID of the new row in the table,
+        // return the new URI with the ID appended to the end of it
+        return ContentUris.withAppendedId(uri, newRowId);
+
     }
 
     /**
