@@ -29,12 +29,17 @@ public class PetProvider extends ContentProvider {
 
     static {
 
+        /*
+         * The calls to addURI() go here, for all of the content URI patterns that the provider
+         * should recognize. For this snippet, only the calls for table 3 are shown.
+         */
+
         sUriMatcher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS, PETS);
 
         sUriMatcher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS + "/#", PETS_ID);
     }
 
-    //databse helper object
+    //database helper object
     private PetDbHelper mDbHelper;
 
     /**
@@ -174,8 +179,39 @@ public class PetProvider extends ContentProvider {
      */
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+
+        final int match = sUriMatcher.match(uri);
+
+        switch (match) {
+
+            case PETS:
+                return updatePet(uri, values, selection, selectionArgs);
+
+            case PETS_ID:
+
+                /**rows with selectionargs with certian _id */
+                selection = PetEntry._ID + "=?"; //_id=? the 5 will replace the question mark
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))}; //parseId is looking for a int
+                // at the end of the uri for the _id ex: { "5" }
+                //it then gets conterted back into a string so it can be
+                //added to the selection string ex: _id=5
+
+                return updatePet(uri, values, selection, selectionArgs);
+
+             default:
+                 throw new IllegalArgumentException("Update pet not supported for " + uri);
+        }
+
+
+    }
+
+
+    private int updatePet(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+
+
         return 0;
     }
+
 
     /**
      * Returns the MIME type of data for the content URI.
