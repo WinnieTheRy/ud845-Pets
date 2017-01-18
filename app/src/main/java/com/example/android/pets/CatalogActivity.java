@@ -52,6 +52,8 @@ public class CatalogActivity extends AppCompatActivity {
         //SQLiteDatabase db = mDbHelper.getReadableDatabase();
     }
 
+    //When new pet is added in the editor activity, the onStart() method will update catalog
+    //actvity with the new pets
     @Override
     protected void onStart() {
         super.onStart();

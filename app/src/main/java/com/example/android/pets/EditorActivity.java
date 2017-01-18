@@ -142,6 +142,7 @@ public class EditorActivity extends AppCompatActivity {
             weight = 0;
         }
 
+
         /**
          * ContentValues: This class is used to store a set of values that the ContentResolver can process.
          */

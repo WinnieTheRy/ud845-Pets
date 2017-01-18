@@ -4,8 +4,11 @@ package com.example.android.pets.data;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.util.Log;
 
-public final class PetContract{
+public final class PetContract {
+
+    private static final String LOG_TAG = PetContract.class.getSimpleName();
 
     /**
      * The "Content authority" is a name for the entire content provider, similar to the
@@ -32,7 +35,9 @@ public final class PetContract{
 
     public static abstract class PetEntry implements BaseColumns {
 
-        /** The content URI to access the pet data in the provider */
+        /**
+         * The content URI to access the pet data in the provider
+         */
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_PETS);
 
         /* pets table constants */
@@ -49,9 +54,13 @@ public final class PetContract{
         public static final int GENDER_MALE = 1;
         public static final int GENDER_FEMALE = 2;
 
-
+        /**
+         * Returns whether or not the given gender is {@link #GENDER_UNKNOWN}, {@link #GENDER_MALE},
+         * or {@link #GENDER_FEMALE}.
+         */
         public static boolean isValidGender(int gender) {
             if (gender == GENDER_UNKNOWN || gender == GENDER_MALE || gender == GENDER_FEMALE) {
+                Log.e(LOG_TAG, "gender is " + true);
                 return true;
             }
             return false;
