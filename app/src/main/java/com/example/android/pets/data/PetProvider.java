@@ -147,6 +147,7 @@ public class PetProvider extends ContentProvider {
 
         // Check that name is not null
         String name = values.getAsString(PetEntry.COLUMN_PET_NAME);
+
         if (name.isEmpty()) {
             throw new IllegalArgumentException("Pet requires a name");
         }
@@ -206,8 +207,8 @@ public class PetProvider extends ContentProvider {
 
                 return updatePet(uri, values, selection, selectionArgs);
 
-             default:
-                 throw new IllegalArgumentException("Update pet not supported for " + uri);
+            default:
+                throw new IllegalArgumentException("Update pet not supported for " + uri);
         }
 
 
@@ -216,13 +217,68 @@ public class PetProvider extends ContentProvider {
 
     private int updatePet(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 
+        /**
+         * Convenience method for updating rows in the database.
+         *
+         * @param table the table to update in
+         * @param values a map from column names to new column values. null is a
+         *            valid value that will be translated to NULL.
+         * @param whereClause the optional WHERE clause to apply when updating.
+         *            Passing null will update all rows.
+         * @param whereArgs You may include ?s in the where clause, which
+         *            will be replaced by the values from whereArgs. The values
+         *            will be bound as Strings.
+         * @return the number of rows affected
+         *
+         * public int update(String table, ContentValues values, String whereClause, String[] whereArgs)
+         */
+
+
+        // Check to see if the content value has a value inside it that needs to be updated
+        // If it doesnt, then we do not check to see if the string is valid
+        boolean nameHasValue = values.containsKey(PetEntry.COLUMN_PET_NAME);
+        if (nameHasValue) {
+            String name = values.getAsString(PetEntry.COLUMN_PET_NAME);
+            if (name.isEmpty()) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        // No need to check breed, null is okay
+
+        boolean genderHasValue = values.containsKey(PetEntry.COLUMN_PET_GENDER);
+        if (genderHasValue) {
+            Integer gender = values.getAsInteger(PetEntry.COLUMN_PET_GENDER);
+            if (gender == null || !PetEntry.isValidGender(gender)) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        boolean weightHasValue = values.containsKey(PetEntry.COLUMN_PET_WEIGHT);
+        if (weightHasValue) {
+            Integer weight = values.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
+            if (weight != null && weight < 0) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        // If there is no value being updated then there is no need to waste resources and
+        // don't try to update the database
+        if (values.size() == 0) {
+
+            return 0;
+        }
+
+        // Otherwise, get writable database to update the data
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
 
-        database.update(PetEntry.TABLE_NAME, values, selection, selectionArgs);
+        int numberOfRows = database.update(PetEntry.TABLE_NAME, values, selection, selectionArgs);
 
+        if (numberOfRows == 0) {
+            Log.e(LOG_TAG, "No row was updated" + uri);
+        }
 
-
-        return 0;
+        return numberOfRows;
     }
 
 
