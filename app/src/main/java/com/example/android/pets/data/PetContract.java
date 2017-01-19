@@ -2,6 +2,7 @@ package com.example.android.pets.data;
 
 //just a class for providing constants so owe make it final so it cannot be extended
 
+import android.content.ContentResolver;
 import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
@@ -34,6 +35,17 @@ public final class PetContract {
 
 
     public static abstract class PetEntry implements BaseColumns {
+
+        /**
+         * The MIME type of the {@link #CONTENT_URI} for a list of pets.
+         */
+        public static final String CONTENT_LIST_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PETS;
+
+        /**
+         * The MIME type of the {@link #CONTENT_URI} for a single pet.
+         */
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PETS;
+
 
         /**
          * The content URI to access the pet data in the provider
