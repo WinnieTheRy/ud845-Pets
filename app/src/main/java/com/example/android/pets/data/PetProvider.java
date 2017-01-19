@@ -34,8 +34,15 @@ public class PetProvider extends ContentProvider {
          * should recognize. For this snippet, only the calls for table 3 are shown.
          */
 
+        // Adds a list of uris to the matcher array. If one of the cases matches one of these
+        // uris then it will execute that block of code.
+
+        // Given an int code of 100
         sUriMatcher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS, PETS);
 
+        // Given an int code of 101
+        // /# reoresent that we are looking for a spcefic row in the table. Therefore if the uri being sent in has a int at teh end
+        // it will chose this uri matcher with code 101
         sUriMatcher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS + "/#", PETS_ID);
     }
 
@@ -176,6 +183,7 @@ public class PetProvider extends ContentProvider {
 
     /**
      * Updates the data at the given selection and selection arguments, with the new ContentValues.
+     * Returns the number of rows to be updated
      */
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
@@ -207,6 +215,11 @@ public class PetProvider extends ContentProvider {
 
 
     private int updatePet(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+
+        SQLiteDatabase database = mDbHelper.getWritableDatabase();
+
+        database.update(PetEntry.TABLE_NAME, values, selection, selectionArgs);
+
 
 
         return 0;
