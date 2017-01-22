@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,10 +96,22 @@ public class CatalogActivity extends AppCompatActivity {
         //Now using a content resolver and content provider to send query to database instead of directly to the database
         Cursor cursor = getContentResolver().query(PetEntry.CONTENT_URI, projection, null, null, null);
 
-        try {
-            // Display the number of rows in the Cursor (which reflects the number of rows in the
-            // pets table in the database).
-            TextView displayView = (TextView) findViewById(R.id.text_view_pet);
+        // Get reference to the list view in the activity catoalog layout
+        ListView listView = (ListView) findViewById(R.id.list_View);
+
+        // Make instance of cursor adapter class
+        PetCursorAdapter cursorAdapter = new PetCursorAdapter(this, cursor);
+
+        // Attach cursor adapter to the list view
+        listView.setAdapter(cursorAdapter);
+
+        // Display the number of rows in the Cursor (which reflects the number of rows in the
+        // pets table in the database).
+        //TextView displayView = (TextView) findViewById(R.id.text_view_pet);
+
+//        try {
+
+/*
 
             displayView.setText("The pets table contains " + cursor.getCount() + " pets" + "\n");
 
@@ -129,13 +142,14 @@ public class CatalogActivity extends AppCompatActivity {
                 //displaying all the values to the textview
                 displayView.append("\n" + currentId + " - " + currentName + " - " + currentBreed + " - " + currentGender + " - " + currentWeight);
 
-            }
+                }
+*/
 
-        } finally {
+        /*} finally {
             // Always close the cursor when you're done reading from it. This releases all its
             // resources and makes it invalid.
             cursor.close();
-        }
+        }*/
     }
 
     private void insertPet() {
@@ -168,7 +182,7 @@ public class CatalogActivity extends AppCompatActivity {
 
         //displaying toast to verify pet was added
         //we could have also said if newUri == null then display dummy pet failed
-        if(idValid == -1) {
+        if (idValid == -1) {
             Toast.makeText(this, R.string.dummy_pet_not_added, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, R.string.dummy_pet_added, Toast.LENGTH_SHORT).show();
