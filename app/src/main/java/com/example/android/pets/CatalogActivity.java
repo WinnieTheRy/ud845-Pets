@@ -11,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -68,8 +69,8 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         // Attach cursor adapter to the list view
         listView.setAdapter(mCursorAdapter);
 
-        // Starting loader
-        getLoaderManager().initLoader(PET_LOADER, null, this);
+        // Starting loader, use getSupportLoaderManager for v4.app.....
+        getSupportLoaderManager().initLoader(PET_LOADER, null, this);
 
         //displayDatabaseInfo();
 
