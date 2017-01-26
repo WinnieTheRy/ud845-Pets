@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,9 +27,15 @@ import com.example.android.pets.data.PetProvider;
 /**
  * Displays list of pets that were entered and stored in the app.
  */
-public class CatalogActivity extends AppCompatActivity {
+public class CatalogActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private PetDbHelper mDbHelper;
+//private PetDbHelper mDbHelper;
+
+    // A unique identifier for this cursor loader. Can be whatever you want. Identifiers are scoped to a particular LoaderManager instance.
+    private static final int PET_LOADER = 0;
+
+    // This is the Adapter being used to display the list's data.
+    PetCursorAdapter mCursorAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +52,26 @@ public class CatalogActivity extends AppCompatActivity {
             }
         });
 
-        mDbHelper = new PetDbHelper(this);
+        /**
+         * List view for setting the empty view when no pets are added to the databse
+         */
+        ListView listView = (ListView) findViewById(R.id.list_View);
 
-        displayDatabaseInfo();
+        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
+        View emptyView = findViewById(R.id.empty_view);
+
+        listView.setEmptyView(emptyView);
+
+        // Make instance of cursor adapter class
+        mCursorAdapter = new PetCursorAdapter(this, null);
+
+        // Attach cursor adapter to the list view
+        listView.setAdapter(mCursorAdapter);
+
+        // Starting loader
+        getLoaderManager().initLoader(PET_LOADER, null, this);
+
+        //displayDatabaseInfo();
 
         //PetDbHelper mDbHelper = new PetDbHelper(CatalogActivity.this);
 
@@ -58,6 +84,11 @@ public class CatalogActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        //Starting Loader
+        getLoaderManager().initLoader(PET_LOADER, null, CatalogActivity.this);
+
+
         displayDatabaseInfo();
     }
 
@@ -189,6 +220,52 @@ public class CatalogActivity extends AppCompatActivity {
         }
 
     }
+
+    //Loader:
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        //Define the prjection that specfifies the columns form the table we care about
+        // We include _ID because the CursorAdapter assumes that the Cursor contains a column called _id.
+        String[] projection = {
+                PetEntry._ID,
+                PetEntry.COLUMN_PET_NAME,
+                PetEntry.COLUMN_PET_BREED
+        };
+
+        // This loader will execute the content providers query method on a background thread
+        return new CursorLoader(this,   // Parent activity context
+                PetEntry.CONTENT_URI,   // Provide content uri for query
+                projection,             // Columns to include in the resulting query
+                null,                   // No selection clause (no specific rows)
+                null,                   // No selection args (The specific row we are looking for)
+                null);                  // Default sort order
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+        // Swap the new cursor in.  (The framework will take care of closing the
+        // old cursor once we return.)
+
+        // Update {@link PetCursorAdapter} with the new cursor containing updated pet data
+        mCursorAdapter.swapCursor(data);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+        // This is called when the last Cursor provided to onLoadFinished()
+        // above is about to be closed.  We need to make sure we are no
+        // longer using it.
+
+        //Callback called when the data needs to be deleted (udacity)
+        mCursorAdapter.swapCursor(null);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
