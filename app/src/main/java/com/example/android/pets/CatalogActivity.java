@@ -4,7 +4,6 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -17,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.pets.data.PetContract;
@@ -72,125 +70,10 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         // Starting loader, use getSupportLoaderManager for v4.app.....
         getSupportLoaderManager().initLoader(PET_LOADER, null, this);
 
-        //displayDatabaseInfo();
-
-        //PetDbHelper mDbHelper = new PetDbHelper(CatalogActivity.this);
-
-        /**Creates or opens an already existing sqlite database  */
-        //SQLiteDatabase db = mDbHelper.getReadableDatabase();
     }
 
-    //When new pet is added in the editor activity, the onStart() method will update catalog
-    //actvity with the new pets
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        displayDatabaseInfo();
-    }
-
-    /**
-     * Temporary helper method to display information in the onscreen TextView about the state of
-     * the pets database.
-     */
-    private void displayDatabaseInfo() {
-        // To access our database, we instantiate our subclass of SQLiteOpenHelper
-        // and pass the context, which is the current activity.
-        //PetDbHelper mDbHelper = new PetDbHelper(this);
-
-        // Create and/or open a database to read from it
-        //SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
-        // Perform this raw SQL query "SELECT * FROM pets"
-        // to get a Cursor that contains all rows from the pets table.
-        //Cursor cursor = db.rawQuery("SELECT * FROM " + PetEntry.TABLE_NAME, null);
-
-        //The columns we want to recieve from the query
-        String[] projection = {
-                PetEntry._ID,
-                PetEntry.COLUMN_PET_NAME,
-                PetEntry.COLUMN_PET_BREED,
-                PetEntry.COLUMN_PET_GENDER,
-                PetEntry.COLUMN_PET_WEIGHT
-        };
-
-        /**
-         * READING DATA:
-         * Cursor: This interface provides random read-write access to the result set returned by a database query.
-         */
-        //This is the query we send to get the columns we want from the projection and all the rows from that pets table since we have null
-        //Cursor cursor = db.query(PetEntry.TABLE_NAME, projection, null, null, null, null, null);
-
-        //Now using a content resolver and content provider to send query to database instead of directly to the database
-        Cursor cursor = getContentResolver().query(PetEntry.CONTENT_URI, projection, null, null, null);
-
-        // Get reference to the list view in the activity catoalog layout
-        ListView listView = (ListView) findViewById(R.id.list_View);
-
-        // Make instance of cursor adapter class
-        PetCursorAdapter cursorAdapter = new PetCursorAdapter(this, cursor);
-
-        // Attach cursor adapter to the list view
-        listView.setAdapter(cursorAdapter);
-
-        // Display the number of rows in the Cursor (which reflects the number of rows in the
-        // pets table in the database).
-        //TextView displayView = (TextView) findViewById(R.id.text_view_pet);
-
-//        try {
-
-/*
-
-            displayView.setText("The pets table contains " + cursor.getCount() + " pets" + "\n");
-
-            displayView.append("\n" + PetEntry._ID + " - "
-                    + PetEntry.COLUMN_PET_NAME + " - " +
-                    PetEntry.COLUMN_PET_BREED + " - " +
-                    PetEntry.COLUMN_PET_GENDER + " - " +
-                    PetEntry.COLUMN_PET_WEIGHT + "\n");
-
-            //columns index value
-            int idColumnIndex = cursor.getColumnIndex(PetEntry._ID);//gets the value of the columns number which is 0
-            int nameColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_NAME); //gets the calue of the column number which is 1
-            int breedColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_BREED);
-            int genderColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_GENDER);
-            int weightCoumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_WEIGHT);
-
-            //row index values which loop from 0 to the total amount of rows, It starts at -1 since that represents the names of the columns
-            while (cursor.moveToNext()) {
-
-                //Getting the string or int value (for _id) based on the current row we are in
-                //ex: row: 0 we well get all the int and string values based on the colums set in above and below
-                int currentId = cursor.getInt(idColumnIndex);
-                String currentName = cursor.getString(nameColumnIndex);
-                String currentBreed = cursor.getString(breedColumnIndex);
-                int currentGender = cursor.getInt(genderColumnIndex);
-                int currentWeight = cursor.getInt(weightCoumnIndex);
-
-                //displaying all the values to the textview
-                displayView.append("\n" + currentId + " - " + currentName + " - " + currentBreed + " - " + currentGender + " - " + currentWeight);
-
-                }
-*/
-
-        /*} finally {
-            // Always close the cursor when you're done reading from it. This releases all its
-            // resources and makes it invalid.
-            cursor.close();
-        }*/
-    }
 
     private void insertPet() {
-
-        // To access our database, we instantiate our subclass of SQLiteOpenHelper
-        // and pass the context, which is the current activity.
-        /**
-         * Created a global PetDbHelper variable
-         */
-        //PetDbHelper mDbHelper = new PetDbHelper(this);
-
-        //Gets the data repsository in write mode
-        //SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
@@ -199,9 +82,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         values.put(PetEntry.COLUMN_PET_BREED, "Terrier");
         values.put(PetEntry.COLUMN_PET_GENDER, PetEntry.GENDER_MALE);
         values.put(PetEntry.COLUMN_PET_WEIGHT, 7);
-
-        // Insert the new row, returning the primary key value of the new row
-        //long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
 
         Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
 
@@ -219,8 +99,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     }
 
     //Loader:
-
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
@@ -276,11 +154,12 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
+
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
                 insertPet();
-                displayDatabaseInfo();
                 return true;
+
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
                 // Do nothing for now
