@@ -85,10 +85,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     protected void onStart() {
         super.onStart();
 
-        //Starting Loader
-        getLoaderManager().initLoader(PET_LOADER, null, CatalogActivity.this);
-
-
         displayDatabaseInfo();
     }
 
