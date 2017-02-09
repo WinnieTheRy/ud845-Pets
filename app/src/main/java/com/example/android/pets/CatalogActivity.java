@@ -102,7 +102,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        //Define the prjection that specfifies the columns form the table we care about
+        // Define the projection that specifies the columns from the table we care about
         // We include _ID because the CursorAdapter assumes that the Cursor contains a column called _id.
         String[] projection = {
                 PetEntry._ID,
